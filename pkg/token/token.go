@@ -22,11 +22,18 @@ const (
 	// Delimeters
 	COMMA     = ","
 	SEMICOLON = ";"
+	ASTERISK   = "*"
+	SLASH      = "/"
+	MINUS      = "-"
+	BANG       = "!"
 
 	LPAREN = "("
 	RPAREN = ")"
-	LBRACE = "["
-	RBRACE = "]"
+	LBRACE = "{"
+	RBRACE = "}"
+
+	GT = ">"
+	LT = "<"
 
 	// Reserved
 	FUNCTION = "FUNCTION"

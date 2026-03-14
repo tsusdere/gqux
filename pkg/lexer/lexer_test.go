@@ -122,20 +122,20 @@ func TestGibberishInput(t *testing.T) {
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
-		{token.ILLEGAL, "!"},
-		{token.ILLEGAL, "-"},
-		{token.ILLEGAL, "/"},
-		{token.ILLEGAL, "*"},
+		{token.BANG, "!"},
+		{token.MINUS, "-"},
+		{token.SLASH, "/"},
+		{token.ASTERISK, "*"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
-		
+
 		{token.INT, "5"},
-		{token.ILLEGAL, "<"},
+		{token.LT, "<"},
 		{token.INT, "10"},
-		{token.ILLEGAL, ">"},
+		{token.GT, ">"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
-	}	
+	}
 
 	l := New(input)
 
