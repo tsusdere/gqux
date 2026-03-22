@@ -90,9 +90,7 @@ func TestNextTokenUnicode(t *testing.T) {
 		{token.PLUS, "+"},
 		{token.ILLEGAL, "🚀"},
 		{token.COMMA, ","},
-		{token.ILLEGAL, "c"},
-		{token.ILLEGAL, "a"},
-		{token.ILLEGAL, "f"},
+		{token.IDENT, "caf"},
 		{token.ILLEGAL, "é"},
 		{token.SEMICOLON, ";"},
 	}
@@ -122,20 +120,20 @@ func TestGibberishInput(t *testing.T) {
 		expectedType    token.TokenType
 		expectedLiteral string
 	}{
-		{token.ILLEGAL, "!"},
-		{token.ILLEGAL, "-"},
-		{token.ILLEGAL, "/"},
-		{token.ILLEGAL, "*"},
+		{token.BANG, "!"},
+		{token.MINUS, "-"},
+		{token.SLASH, "/"},
+		{token.ASTERISK, "*"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
-		
+
 		{token.INT, "5"},
-		{token.ILLEGAL, "<"},
+		{token.LT, "<"},
 		{token.INT, "10"},
-		{token.ILLEGAL, ">"},
+		{token.GT, ">"},
 		{token.INT, "5"},
 		{token.SEMICOLON, ";"},
-	}	
+	}
 
 	l := New(input)
 
@@ -147,6 +145,84 @@ func TestGibberishInput(t *testing.T) {
 				i, tt.expectedType, tok.Type)
 		}
 
+		if tok.Literal != tt.expectedLiteral {
+			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q",
+				i, tt.expectedLiteral, tok.Literal)
+		}
+	}
+}
+
+func TestFlowControl(t *testing.T) {
+	input := `if (5 < 10) {
+	return true;
+} else {
+	return false;
+}`
+
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.IF, "if"},
+		{token.LPAREN, "("},
+		{token.INT, "5"},
+		{token.LT, "<"},
+		{token.INT, "10"},
+		{token.RPAREN, ")"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.TRUE, "true"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+		{token.ELSE, "else"},
+		{token.LBRACE, "{"},
+		{token.RETURN, "return"},
+		{token.FALSE, "false"},
+		{token.SEMICOLON, ";"},
+		{token.RBRACE, "}"},
+	}
+
+	l := New(input)
+
+	for i, tt := range tests {
+		tok := l.NextToken()
+		
+		if tok.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q",
+				i, tt.expectedType, tok.Type)
+		}
+	}
+}
+
+func TestEqualityOperators(t *testing.T) {
+	input := `10 == 10;
+	10 != 9;`
+	
+	tests := []struct {
+		expectedType    token.TokenType
+		expectedLiteral string
+	}{
+		{token.INT, "10"},
+		{token.EQ, "=="},
+		{token.INT, "10"},
+		{token.SEMICOLON, ";"},
+		
+		{token.INT, "10"},
+		{token.NOT_EQ, "!="},
+		{token.INT, "9"},
+		{token.SEMICOLON, ";"},
+	}
+	
+	l := New(input)
+
+	for i, tt := range tests {
+		tok := l.NextToken()
+
+		if tok.Type != tt.expectedType {
+			t.Fatalf("tests[%d] - tokentype wrong. expected=%q, got=%q",
+				i, tt.expectedType, tok.Type)
+		}
+		
 		if tok.Literal != tt.expectedLiteral {
 			t.Fatalf("tests[%d] - literal wrong. expected=%q, got=%q",
 				i, tt.expectedLiteral, tok.Literal)
